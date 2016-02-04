@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block help %}
+
+<p>this page displays information regarding items that had errors, either during parsing
+or during gDelta's processing.</p>
+
+<p>There are three broad types of errors:</p>
+<ul>
+  <li>Parse: an error that arrised during parsing. Basically anything that had something in the TSDB error field in the 'parse' file.
+  <li>Lexicon: gDelta could not find a lexical item from the parse result in the lexicon.</li>
+  <li>Derivation: gDelta could not process a result because the derivation string was not well-formed.
+</ul>
+
+<p>By default all items that experienced errors are included in
+gDelta's results where possible. In particular this means that items
+whose parsability has changed due to an error are included in the
+relevant parse change category. If you don't want this to happen you
+can use the --skip-errors command line option to gDelta.</p>
+
+
+
+{% endblock %}
+
+{% block content %}
+{% if errors|length == 0 %}
+<p>No errors were encountered.</p>
+{% else %}
+<p>{{ errors|length }} errors were found.</p> 
+<table id="error-table" class="tablesorter">
+  <thead>
+    <tr>
+      <th title="ID of the item with the error">Item ID</th>
+      <th title="type of error">Type</th>
+      <th title="version of the grammar the error ocurred in">Grammar version</th>
+      <th title="profile the item came from">Profile</th>
+      <th class="text" title="description of the error">Description</th>
+    </tr>
+  </thead>
+  {% for item in errors %}
+  <tr>
+    <td class="item-id" title="{{ item.text|escape }}"><a href="{{ items_view.files.html }}#{{ item.id }}">{{ item.id }}</a></td>
+    <td>{{ item.error.kind }}</td>
+    <td>{{ item.grammar.version }}</td>
+    <td>{{ item.profile_name }}</td>
+    <td>{{ item.error.msg }}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% endif %}
+{% endblock content %}

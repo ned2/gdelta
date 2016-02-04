@@ -1,0 +1,291 @@
+body {
+    font-family: Arial, Lucida Grande, sans-serif;
+}
+
+a {
+    color: black;
+    text-decoration: none;
+}
+
+a:hover {text-decoration: underline}
+
+h1, h2, h3, h4 {
+    margin: 0;
+    padding: 0;
+}
+
+h2 {margin: 0 0 1em 0}
+
+
+table {border-collapse: collapse}
+
+th {
+    background-color:#DDD;
+    color: #444;
+    font-weight: bold;
+    text-align: left;
+}
+
+.hidden {display: none}
+
+.action {
+    cursor: pointer;
+}
+
+.button {
+    cursor: pointer;
+	outline: none;
+	padding: .3em .5em .2em;
+	-webkit-border-radius: .4em; 
+	-moz-border-radius: .4em;
+	border-radius: .4em;
+	box-shadow: 0 1px 4px rgba(0,0,0,.4);
+}
+
+.button:active {
+    position: relative;
+    top: 1px;
+}
+
+.grey {
+	background: #666;
+	background: -webkit-linear-gradient(#CCC, #888);
+	background: -moz-linear-gradient(#CCC, #888);
+	background: -o-linear-gradient(#CCC, #888);
+	filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#CCCCCC', endColorstr='#888888');
+}
+
+.grey:hover {
+	background: #555;
+	background: -webkit-linear-gradient(#BBB, #777);
+	background: -moz-linear-gradient(#BBB, #777);
+	background: -o-linear-gradient(#BBB, #777);
+	filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#BBBBBB', endColorstr='#777777');
+}
+
+.grey:active {
+	background: #555;
+	background: -webkit-linear-gradient(#777, #BBB);
+	background: -moz-linear-gradient(#777, #BBB);
+	background: -o-linear-gradient(#777, #BBB);
+	filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#777777', endColorstr='#BBBBBB');
+}
+
+#tabbar {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+} 
+
+#tabbar li {
+    display: inline-block;
+    width: 140px;
+    text-align: center;
+    background-color: #DDF;
+    font-size: 120%;
+}
+
+#tabbar li.active {background-color: #D99}
+
+#help-box {
+    position: fixed;
+    width: 60%;
+    top: 0;
+    right: 1em;
+}
+
+#help-tab-container {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
+#help-content {
+    background-color: #EEE;
+    box-shadow: 2px 2px 5px rgba(0,0,0,.5);
+    border-radius: 0 0 0 10px;
+    padding: 1em;
+    display: none;
+}
+
+#help-tab {
+    background-color: #EEE;
+    box-shadow: 2px 2px 5px rgba(0,0,0,.5);
+    position: absolute;
+    right: 0;
+    width: 5em;
+    border-radius: 0 0 10px 10px;
+    clip: rect(0, 1000px, 1000px, -10000px);
+}
+
+#toggle-help {
+    display: block;
+    margin: 0 auto;
+    width: 2em;
+    line-height: 2em;
+    cursor: pointer;
+}
+
+#content {margin-top: 2em;}
+
+
+/* page specific styles */
+
+#overview-and-attribute-changes {
+    width: 50%;
+    display: inline-block;
+}
+
+#attribute-changes table {width:100%}
+
+#attribute-change-separator {width: 1em}
+
+#overview table {
+    width: 100%;
+    margin-bottom: 1.5em;
+}
+
+#overview .number {width: 15%}
+
+.overview-data {
+    width: 50%;
+    text-align: right;
+    padding-right: 1.5em;
+}
+
+#attribute-table {width: 80%}
+
+#error-table, #item-table {width: 100%}
+
+#item-table {table-layout: fixed}
+
+#item-table .attributes {display: none}
+
+#item-table-nav {margin-bottom: 0.5em}
+
+#item-table th.text {width: 45%}
+
+#error-table th.text {width: 45%}
+
+#filter-table {margin-bottom: 1.5em}
+
+#filter-table input[type="text"], 
+#filter-table select {width: 300px}
+
+.filter-label {width: 30%}
+
+.tablesorter th {
+    background-image: url(sort.gif);
+    background-repeat: no-repeat;
+    background-position: center right;
+    cursor: pointer;
+}
+
+.headerSortUp, .headerSortDown {
+    background-color: #BBB;
+    background-repeat: no-repeat;
+    background-position: center right;
+}
+
+th.headerSortUp {background-image: url(ascending.gif);}
+
+th.headerSortDown {background-image: url(descending.gif);}
+    
+#parse-changes {
+    width: 40%;
+    display: inline-block;
+    margin-left: 6em;
+    vertical-align: top;
+}
+
+.even {background-color: #EEE}
+.cluster .even {background-color: #FFF}
+
+.attribute-list-wrapper {
+    height: 400px;
+    overflow-y: scroll;
+    margin-bottom: 1.5em;
+    box-shadow: 2px 2px 5px rgba(0,0,0,.5);
+}
+
+.attribute-row.active, .item-row.active {background-color: #DDD}
+
+.cluster {
+    margin-left: 2em;
+    margin-bottom: 2em;
+    padding: 1em;
+    box-shadow: 3px 3px 10px #777;
+    background-color: #EEE;
+    border-radius: 10px;
+    max-width: 1200px;
+}
+
+.cluster h3 { margin: 1em 0;}
+
+.cluster-category {
+    margin-bottom: 2em;
+}
+
+.cluster-button {
+    width: 14em;
+    margin-bottom: 2em;
+}
+
+.cluster-list {
+    width: 90%;
+}
+
+.cluster-number {
+    background-color: #BBB;
+    padding: 0 10px;
+}
+
+.cluster-header-item {
+    vertical-align: middle;
+    display: inline-block;
+    margin-right: 2em;
+}
+
+.cluster-header {
+    width: 100%;
+    background-color: #D0D0DD;
+}
+
+.cluster .button.active {
+    background-color: #D99; 
+}
+
+.cluster table {
+    width: 100%;
+    margin-bottom: 1em;
+}
+
+.cluster-items th.text {width: 70%}
+
+.tiny {font-size: 12}
+
+.attribute {
+    font-family: monospace;
+    font-size: 110%;
+}
+
+.attribute a:hover, .item-id a:hover {text-decoration: none}
+
+.attribute-list .attribute { width: 100%; }
+
+.old, a.old, .negative {color: red}
+
+.new, a.new {color: green}
+
+table.mini td {width: 50px}
+
+.number {
+    text-align: right;
+    padding-right: 1.5em;
+}
+
+.highlight, .even.highlight, .odd.highlight {
+    background-color: #FAA;
+}
+
+.parse-cat {font-weight: bold}

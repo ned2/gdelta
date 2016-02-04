@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block help %}
+
+<p>This page presents items from the different parse change categories
+separated into clusters. The clustering is intended to try to capture
+a groups of related changes within each parse change category.</p>
+
+<p>Clicking on each of the grey buttons expands the list of clusters
+for each parse change category.</p>
+
+<p>Initially each cluster is presented with the number of items in the
+cluster, the score for the cluster and an examplar item. The exemplar
+item is the item closest to the centre of the cluster, intended to be
+illustrative of the kind of items found in the cluster.</p>
+
+<p>The score of the cluster is derived from the average silhouette of
+all items within the cluster. The silhouette of an item is a combined
+measure of intra-cluster similarity and inter-cluster dissimilarity
+which yields a score between -1 and 1 inclusive. Items with a silhouette
+closer to 1 have been clustered well.</p>
+
+<p>Clicking the 'Details' button reveals further information about the
+cluster. The first table displays information about the top 5 attributes
+(by weighting). Clicking on the attribute will take you to that attribute's
+position in the Attribute page and mousing over the attribute highlights
+items within the cluster that contain that attribute. The second table 
+lists all items contained in the cluster along with information about
+each item. </p>
+
+{% endblock %}
+
+{% block content %}
+
+{% for parse_cat in parse_cats %}
+
+<div class="cluster-category">
+  <div class="cluster-button button grey" title="{{ parse_cat.desc }}">
+    <h2>{{ parse_cat.html_heading }}</h2>
+    <div class="stat" title="number of items in the cluster">{{ parse_cat.num_used_items }} items</div>
+    {% if parse_cat.num_good_items != 0 %}
+    <div class="stat" title="a combined metric of how similar items with the cluster are and how dissimilar they are to the items in other clusters">{{ parse_cat.results.clusters|length }} clusters</div>
+    {% endif %}
+  </div>
+
+{% if parse_cat.results != None %}
+  <div class="cluster-list">
+    {% for cluster in parse_cat.results.clusters %}
+    <div class="cluster">
+      <div class="cluster-header">
+        <div class="cluster-number cluster-header-item">
+          <h3>Cluster {{ loop.index }}</h3>
+        </div>
+        <div class="cluster-header-item">
+          <div>Items: {{ cluster.points|length }}</div>
+          <div title="how well the cluster's items have been clustered (ranges from -1 to 1, higher is better)">Score: {{ "%.3f"|format(cluster.silhouette) }}</div>
+        </div>
+        <div class="button cluster-header-item toggle-cluster-info">Details</div>
+      </div>
+      <p>Exemplar:</p>
+      <p title="item ID: {{ cluster.nearest_point.item.id }} from {{cluster.nearest_point.item.profile_name }}">"{{ cluster.nearest_point.item.text|escape }}"</p>
+      <div class="cluster-attributes">
+        {% if parse_cat.results.clusters|length > 1 %}
+        <table class="tablesorter cluster-attributes-table">
+          <thead>
+            <tr>
+              <th title="attributes found in the exemplar">Exemplar attribute</th>
+              <th class="number" title="weighting of this attribute">Weighting</th>
+              <th class="number" title="the percentage of items in this cluster that have this attribute appearing in the top 10 attributes">Cohesion (%)</th>
+              <th class="number" title="the percentage of items in all other clusters that have this attribute appearing in the top 10 attributes">Overlap (%)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for attribute in cluster.top_attributes %}
+            <tr>
+              <td class="attribute {{attribute.name }}"><a href="{{ attributes_view.files.html }}#{{ attribute.name }}">{{ attribute.name }}</a></td>
+              <td class="number">{{ "%.2f"|format(attribute.weight) }}</td>
+              <td class="number">{{ attribute.cohesion }}</td>
+              <td class="number">{{ attribute.overlap }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% endif %}
+      </div>
+      <div class="cluster-items">
+        <table class="tablesorter cluster-items-table">
+          <thead>
+            <tr>
+              <th title="the ID of this item">Item ID</th>
+              <th title="the profile this item originated from">Profile</th>
+              <th class="number" title="score of the item indicating how well it fits in the clustering">Score</th>
+              <th class="text" title="the input string for this item">Item</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for point in cluster.points %} 
+            <tr class="item-row {% for attribute in point.item.attributes %}{{ attribute }} {% endfor %}">
+              <td class="item-id"><a href="{{ items_view.files.html }}#{{ point.item.id }}">{{ point.item.id }}<a></td>
+              <td>{{ point.item.profile_name }}</td>
+              <td class="number">{{ "%.4f"|format(point.silhouette) }}</td>
+              <td>{{ point.item.text|escape }}</td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+{% endif %}
+</div>
+{% endfor %}
+{% endblock content %}
+

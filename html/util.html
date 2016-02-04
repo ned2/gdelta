@@ -1,0 +1,25 @@
+{% macro attribute_list(parse_cat) %}
+{% if parse_cat.top_attributes|length != 0 %}
+  <div class="attribute-list-wrapper">
+  <table class="tablesorter attribute-list">
+
+  <thead>
+    <tr title="{{ parse_cat.desc }}">
+      <th>{{parse_cat.html_heading}}</th>
+      <th class="number" title="The global weight of this attribute">Weight</th>
+      <th class="number" title="The global change in items with this attribute">Change</th>
+      <th class="number" title="number of items in this parse category the attribute occurs in">Items</th>
+    </tr>
+  </thead>
+  {% for attribute in parse_cat.top_attributes %}
+    <tr>
+      <td class="attribute"><a href="{{ attributes_view.files.html }}#{{ attribute }}">{{ attribute }}</a></td>
+      <td class="number">{{ "%.3f"|format(attributes[attribute].weight) }}</td>
+      <td class="number">{{ attributes[attribute].change }}</td>
+      <td class="number">{{ parse_cat.attribute_counts[attribute] }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  </div>
+{% endif %}
+{% endmacro %}

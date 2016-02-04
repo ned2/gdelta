@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block help %}
+
+<p>This page presents statistics on all attributes found in the parse
+results from both the previous and new versions of the grammar.</p>
+
+<p>The table can be sorted on any column by clicking on column headers
+and secondary and tertiary (etc) sortings can be applied by holding
+shift whilst clicking on column headers.</p>
+
+<p>Clicking on a attribute name will take you to the Item page with the
+items filtered to only include items that contain that attribute.</p>
+
+<p>A 'attribute' is simply a type extracted from the label of a node
+from the full derivation tree produced for a parse - with the
+exception of lexical entries (ie leaf nodes) which have been replaced
+with their lexical types. The weight assigned to a attribute is an
+indication of the degree to which gDelta thinks the attribute is
+relevant to changes made to the grammar; the higher the weight the
+more correlated.</p>
+
+{% endblock %}
+
+{% block content %}
+
+<p>Filter on attribute name:<input type="text" id="attribute-filter"><input type="submit" id="attribute-filter-clear" value="Clear"></p>
+
+<table id="attribute-table" class="tablesorter">
+  <thead>
+    <tr>
+      <th>Attribute</th>
+      <th class="number" title="the magnitude of the change in number of items recieving at least one reading containing this attribute">Magnitude</th>
+      <th class="number" title="the change in number of items recieving at least one reading containing this attribute">Change</th>
+      <th class="number" title="the degree to which this attribute was impacted by the changes to the grammar">Weight</th>
+      <th class="number" title="number of items recieving at least one reading with the previous version of the grammar containing this attribute">Prev items</th>
+      <th class="number" title="number of items recieving at least one reading with the new version of the grammar containing this attribute">New items</th>
+      <th class="number" title="indicates whether this attribute is found in the source files of both or just one version of the grammar">Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for f in sorted_attributes %}
+    <tr id="{{ f.name }}" class="attribute-row {{ f.status }}">
+      <td class="attribute" title="attribute"><a href="{{ items_view.files.html }}#{{ f.name }}">{{ f.name }}</a></td>
+      <td class="number" title="Magnitude">{{ f.change_size }}</td>
+      <td class="number" title="Change">{{ f.change }}</td>
+      <td class="number" title="Weight">{{ "%.3f"|format(f.weight) }}</td>
+      <td class="number" title="Prev items">{{ f.prev_counts }}</td>
+      <td class="number" title="New items">{{ f.new_counts }}</td>
+      <td class="number" title="Status">{{ f.status }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endblock content %}
+

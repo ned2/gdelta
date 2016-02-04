@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>{{ title }}</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+{% for css_file in css_files %}
+<link rel="stylesheet" href="{{ static_dir }}/{{ css_file }}">
+{% endfor %}
+{% for js_file in js_files %}
+<script language=JavaScript src="{{ static_dir }}/{{ js_file }}" type=text/javascript></script>
+{% endfor %}
+</head>
+<body>
+<ul id="tabbar">
+  {% for view in views %}
+  <li id="{{ view.name }}-tab" class="tab {% if type == view.name %}active{% endif %}"><a href="{{ view.files.html }}">{{ view.name|capitalize }}</a></li>
+  {% endfor %}
+</ul>
+<div id="help-box">
+  <div id="help-content">
+    <h2>Help</h2>
+    {% block help %}{% endblock %}  
+  </div>
+  <div id="help-tab-container">
+       <div id="help-tab">
+         <a id="toggle-help">help</a>
+       </div>
+  </div>
+</div>
+<div id="content">
+  {% block content %}{% endblock %}
+</div>
+</body>
+</html>

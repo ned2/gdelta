@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+
+{% from "util.html" import attribute_list with context %}
+
+{% block help %}
+
+<p>This page gives an overview of the changes between parse results.</p>
+
+<h3>Parse Changes</h3>
+<p>gDelta divides up profile items into different categories based
+upon changes to the parsability of items across the previous and new
+versions of the grammar. These categories are:</p>
+
+<ul>
+{% for parse_cat in parse_cats %}
+<li><span class="parse-cat">{{ parse_cat.html_heading }}</span><br>{{ parse_cat.desc }}</li>
+{% endfor %}
+</ul>
+
+<h3>Top Attributes</h3>
+<p>This list provides a list of the top scoring attributes for each
+category of parse change. A 'attribute' is simply a type extracted from
+the label of a node from the full derivation tree produced for a parse
+- with the exception of lexical entries (ie leaf nodes) which have
+been replaced with their lexical types. The weight assigned to a
+attribute is an indication of the degree to which gDelta thinks the
+attribute is relevant to changes made to the grammar; the higher the
+weight the more correlated.</p>
+
+<p>To find out more information about a attribute, clicking it will take
+you to its place in the Attribute page.</p>
+
+{% endblock %}
+
+{% block content %}
+<div id="overview-and-attribute-changes">
+<div id="overview">
+  <h2>Overview</h2>
+    <table>
+      <tr>
+        <td>Grammar</td>
+        <td class="overview-data">{{ gram_name }}</td></tr>
+      <tr>
+        <td>Previous version</td>
+        <td class="overview-data">{{ prev_gram.version }}</td>
+      </tr>
+      <tr>
+        <td>New version</td>
+        <td class="overview-data">{{ new_gram.version }}</td>
+      </tr>
+      <tr>
+        <td>Total items</td>
+        <td class="overview-data">{{ num_items }}</td>
+      </tr>
+      <tr>
+        <td>Profile{% if num_profile != 1%}s{% endif %}</td>
+        <td class="overview-data">{{ profile_names }}</td></tr>
+      </tr>
+    </table>
+    <table>
+      <tr>
+        <th></th>
+        <th class="number" title="previous version of the grammar">Previous</th>
+        <th class="number" title="new version of the grammar">New</th>
+        <th class="number" title="change in these values">Change</th>
+      </tr>
+      <tr>
+        <td>Coverage</td>
+        <td class="number">{{ "%.2f"|format(prev_coverage) }}%</td>
+        <td class="number">{{ "%.2f"|format(new_coverage) }}%</td>
+        <td class="number">{{ "%.2f"|format(new_coverage - prev_coverage) }}%</td>
+      </tr>
+      <tr>
+        <td>Parsing items</td>
+        <td class="number">{{ prev_parsing_items}}</td>
+        <td class="number">{{ new_parsing_items}}</td>
+        <td class="number">{{ new_parsing_items - prev_parsing_items }}</td>
+      </tr>
+      <tr>
+        <td>Mean readings per item</td>
+        <td class="number">{{ "%.2f"|format(av_prev_readings) }}</td>
+        <td class="number">{{ "%.2f"|format(av_new_readings) }}</td>
+        <td class="number">{{ "%.2f"|format(av_new_readings - av_prev_readings) }}</td>
+      </tr>
+      <tr>
+        <td>Mean readings per parsing item</td>
+        <td class="number">{{ "%.2f"|format(av_prev_parse_readings) }}</td>
+        <td class="number">{{ "%.2f"|format(av_new_parse_readings) }}</td>
+        <td class="number">{{ "%.2f"|format(av_new_parse_readings - av_prev_parse_readings) }}</td>
+      </tr>
+      <tr>
+        <td>Total readings</td>
+        <td class="number">{{ prev_readings }}</td>
+        <td class="number">{{ new_readings }}</td>
+        <td class="number">{{ new_readings - prev_readings }}</td>
+      </tr>
+      <tr>
+        <td>Types in grammar files</td>
+        <td class="number">{{ prev_gram.types|length }}</td>
+        <td class="number">{{ new_gram.types|length }}</td>
+        <td class="number">{{ new_gram.types|length - prev_gram.types|length }}</td>
+      </tr>
+      <tr>
+        <td>Distinct attributes in parse results</td>
+        <td class="number">{{ num_prev_feats }}</td>
+        <td class="number">{{ num_new_feats }}</td>
+        <td class="number">{{ num_new_feats - num_prev_feats }}</td>
+      </tr>
+      <tr>
+        <td>Errors</td>
+        <td class="number">{{ num_errors_prev }}</td>
+        <td class="number">{{ num_errors_new }}</td>
+        <td class="number">{{ num_errors_new - num_errors_prev }}</td>
+      </tr>
+    </table>
+    <table>
+      <tr>
+        <th>Changes to parsability</th>
+        <th title="number of items in this category" class="number">Items</th>
+        <th title="after removing items that had some kind of error or appear in this category due to a parse failure" class="number">Used</th>
+      </tr>
+      {% for parse_cat in parse_cats %}
+      <tr>
+        <td title="{{ parse_cat.desc }}">{{ parse_cat.html_heading }}</td>
+        <td class="number">{{ parse_cat.num_total_items }}</td>
+        <td class="number">{{ parse_cat.num_used_items }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+</div>
+
+<div id="attribute-changes">
+  <h2>Top Attribute Changes</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Attribute</th>
+        <th title="increase in this attribute" class="number">Increase</th>
+        <th id="attribute-change-separator"></th>
+        <th>Attribute</th>
+        <th title="decrease in this attribute" class="number">Decrease</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for f_increase, f_decrease in top_attributes %}
+      <tr>
+        <td class="attribute"><a href="{{ attributes_view.files.html }}#{{ f_increase.name }}">{{ f_increase.name }}</a></td>
+        <td class="number">{{ f_increase.change }}</td>
+        <td></td>
+        <td class="attribute"><a href="{{ attributes_view.files.html }}#{{ f_decrease.name }}">{{ f_decrease.name }}</a></td>
+        <td class="number">{{ f_decrease.change }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+</div>
+
+<div id="parse-changes">
+  <h2>Parse Change Attributes</h2>
+  {% for parse_cat in parse_cats %}
+  {{ attribute_list(parse_cat) }}
+  {% endfor %}
+</div>
+
+{% endblock content %}
+

@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block help %}
+
+<p>This page presents information on all the Items from the profiles
+that gDelta used as input.</p>
+
+<p>The table can be sorted on any column by clicking on column headers
+and secondary and tertiary (etc) sortings can be applied by holding
+shift whilst clicking on column headers.</p>
+
+<p>Items can be filtered on using the filter boxes and all use the
+value from the corresponding column to perform the filtering with the
+exception of 'attributes' which uses the attributes found across results
+from both versions of ther grammar. Multiple attributes separated
+by spaces work too.</p>
+
+<p>The value of the 'parse status' column can be one of:</p>
+
+<ul>
+  <li>now_parses</li>
+  <li>now_no_parse</li>
+  <li>change_in_readings</li>
+  <li>same_readings</li>
+  <li>no_parse</li>
+</ul>
+
+<p>For large profiles this page can take some time to load and execute
+filters. If the page continually hangs make sure you're using a recent
+version of your browser (Chrome and Firefox work best) and if that
+fails, use a faster machine.</p>
+
+{% endblock %}
+
+{% block content %}
+
+<div id="item-table-nav">
+  <h3>Filters</h3>
+  <table id="filter-table">
+  <tr>
+    <td class="filter-label">Parse status:</td>
+    <td>
+      <select id="status-filter">
+        <option value=""></option>
+        <option value="now_parses">Now parses</option>
+        <option value="now_no_parse">No longer parses</option>
+        <option value="change_in_readings">Change in number of readings</option>
+        <option value="same_readings">Same number of readings</option>
+        <option value="no_parse">No parse</option>
+      </select>
+    </td>
+    <td><input type="submit" id="status-filter-clear" value="Clear"></td>
+  </tr>
+  <tr>
+    <td class="filter-label">ID:</td>
+    <td><input type="text" id="id-filter"></td>
+    <td><input type="submit" id="id-filter-clear" value="Clear"></td>
+  </tr>
+  <tr>
+    <td class="filter-label">Profile:</td>
+    <td><input type="text" id="profile-filter"></td>
+    <td><input type="submit" id="profile-filter-clear" value="Clear"></td>
+  </tr>
+  <tr>
+    <td class="filter-label">Text:</td>
+    <td><input type="text" id="text-filter"></td>
+    <td><input type="submit" id="text-filter-clear" value="Clear"></td>
+  </tr>
+  <tr>
+    <td class="filter-label">Attributes:</td>
+    <td><input type="text" id="attribute-filter"></td>
+    <td><input type="submit" id="attribute-filter-clear" value="Clear"></td>
+  </tr>
+  </table>
+
+  <div id="item-pager">
+    <form>
+	  <img src="{{ static_dir}}/first.png" class="first"/>
+	  <img src="{{ static_dir}}/prev.png" class="prev"/>
+	  <input type="text" class="pagedisplay"/>
+	  <img src="{{ static_dir}}/next.png" class="next"/>
+	  <img src="{{ static_dir}}/last.png" class="last"/>
+	  <select class="pagesize">
+	    <option selected="selected" value="30">30</option>
+	    <option value="50">50</option>
+	    <option value="100">100</option>
+	    <option value="200">200</option>
+	  </select>
+      <span id="row-count"></span>
+    </form>
+  </div> 
+</div>
+
+<table id="item-table" class="tablesorter">
+  <thead>
+    <tr>
+      <th title="ID of the item">Item ID</th>
+      <th title="indicates whether the item is positive or negative">Type</th>
+      <th title="length of the item string"class="number">Len</th>
+      <th title="profile the item originates from">Prof</th>
+      <th title="parsability of the item">Parse status</th>
+      <th class="number" title="readings recieved under the previous grammar">Old</th>
+      <th class="number" title="readings recieved under the new grammar">New</th>
+      <th class="text" title="input string of the item">Text</th>
+      <th class="attributes" title="attributes found in results from both previous and new versions of the grammar">Attributes</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for prev_item, new_item, attributes in item_list %}
+    <tr id="{{ prev_item.id }}" class="item-row {% if prev_item.wf %}positive{% else %}negative{% endif %}">
+      <td class="item-id">{{ prev_item.id }}</td>
+      <td>{% if prev_item.wf %}positive{% else %}negative{% endif %}</td>
+      <td class="number">{{ prev_item.length }}</td>
+      <td>{{ prev_item.profile_name }}</td>
+      <td>{{ ""|parse_status(prev_item.tot_readings, new_item.tot_readings) }}</td>
+      <td class="number">{{ prev_item.tot_readings }}</td>
+      <td class="number">{{ new_item.tot_readings }}</td>
+      <td>{{ prev_item.text|escape }}</td>
+      <td class="attributes">{{ attributes|join(" ") }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock content %}
+
